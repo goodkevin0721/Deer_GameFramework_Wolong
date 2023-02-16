@@ -26,6 +26,8 @@ public sealed class Tables
     public Deer.TbPlayerData_Character TbPlayerData_Character {get; private set; }
     public Deer.TbEntityData TbEntityData {get; private set; }
     public Deer.TbLevelData TbLevelData {get; private set; }
+    public Deer.TbCarEntityData TbCarEntityData {get; private set; }
+    public Deer.TbCarMoveLevelData TbCarMoveLevelData {get; private set; }
 
     public Tables() { }
     
@@ -56,6 +58,10 @@ public sealed class Tables
         tables.Add("Deer.TbEntityData", TbEntityData);
         TbLevelData = new Deer.TbLevelData(await loader("deer_tbleveldata")); 
         tables.Add("Deer.TbLevelData", TbLevelData);
+        TbCarEntityData = new Deer.TbCarEntityData(await loader("deer_tbcarentitydata")); 
+        tables.Add("Deer.TbCarEntityData", TbCarEntityData);
+        TbCarMoveLevelData = new Deer.TbCarMoveLevelData(await loader("deer_tbcarmoveleveldata")); 
+        tables.Add("Deer.TbCarMoveLevelData", TbCarMoveLevelData);
 
         TbGlobalConfig.Resolve(tables); 
         TbErrorInfo.Resolve(tables); 
@@ -69,6 +75,8 @@ public sealed class Tables
         TbPlayerData_Character.Resolve(tables); 
         TbEntityData.Resolve(tables); 
         TbLevelData.Resolve(tables); 
+        TbCarEntityData.Resolve(tables); 
+        TbCarMoveLevelData.Resolve(tables); 
     }
 
     public void TranslateText(System.Func<string, string, string> translator)
@@ -85,6 +93,8 @@ public sealed class Tables
         TbPlayerData_Character.TranslateText(translator); 
         TbEntityData.TranslateText(translator); 
         TbLevelData.TranslateText(translator); 
+        TbCarEntityData.TranslateText(translator); 
+        TbCarMoveLevelData.TranslateText(translator); 
     }
 }
 
