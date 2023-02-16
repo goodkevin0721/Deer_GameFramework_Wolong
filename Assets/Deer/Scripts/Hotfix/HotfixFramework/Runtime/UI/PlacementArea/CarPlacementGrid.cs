@@ -10,6 +10,7 @@ namespace Flower
 	//[RequireComponent(typeof(BoxCollider2D))]
 	public class CarPlacementGrid : MonoBehaviour, IPlacementArea
 	{
+		public static CarPlacementGrid PlacementInstance;
 		/// <summary>
 		/// Prefab used to visualise the grid
 		/// </summary>
@@ -40,7 +41,7 @@ namespace Flower
 		/// Array of <see cref="PlacementCell"/>s
 		/// </summary>
 		PlacementCell[,] m_Tiles;
-
+		
 		/// <summary>
 		/// Converts a location in world space into local grid coordinates.
 		/// </summary>
@@ -199,6 +200,7 @@ namespace Flower
 		/// </summary>
 		protected virtual void Awake()
 		{
+			PlacementInstance = this;
 			//ResizeCollider();
 
 			// Initialize empty bool array (defaults are false, which is what we want)
