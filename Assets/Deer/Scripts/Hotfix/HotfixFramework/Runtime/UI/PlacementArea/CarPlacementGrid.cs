@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityGameFramework.Runtime;
 
 namespace Flower
 {
@@ -8,9 +10,8 @@ namespace Flower
 	/// Its origin is centered in the middle of the lower-right cell. It can be oriented in any direction
 	/// </summary>
 	//[RequireComponent(typeof(BoxCollider2D))]
-	public class CarPlacementGrid : MonoBehaviour, IPlacementArea
+	public class CarPlacementGrid : GameFrameworkComponent, IPlacementArea
 	{
-		public static CarPlacementGrid PlacementInstance;
 		/// <summary>
 		/// Prefab used to visualise the grid
 		/// </summary>
@@ -41,7 +42,8 @@ namespace Flower
 		/// Array of <see cref="PlacementCell"/>s
 		/// </summary>
 		PlacementCell[,] m_Tiles;
-		
+
+		private Dictionary<int, Vector3> m_CellPosDict = new Dictionary<int, Vector3>();
 		/// <summary>
 		/// Converts a location in world space into local grid coordinates.
 		/// </summary>
@@ -200,7 +202,6 @@ namespace Flower
 		/// </summary>
 		protected virtual void Awake()
 		{
-			PlacementInstance = this;
 			//ResizeCollider();
 
 			// Initialize empty bool array (defaults are false, which is what we want)
@@ -255,6 +256,15 @@ namespace Flower
 						newTile.SetState(PlacementCellState.Empty);
 						newTile.SetCellSize(gridSize);
 						newTile.SetCellIndex(new IntVector2(x, y));
+						int tempKey = IntVector2.GetKey(newTile.CellIndex);
+						if (m_CellPosDict.ContainsKey(tempKey))
+						{
+							m_CellPosDict[tempKey] = newTile.transform.position;
+						}
+						else
+						{
+							m_CellPosDict.Add(tempKey,newTile.transform.position);
+						}
 					}
 				}
 				

@@ -146,5 +146,10 @@ namespace Flower
 		{
 			return new IntVector2(-left.x, -left.y);
 		}
+		
+		public static int GetKey(IntVector2 tempVector2)
+		{
+			return tempVector2.x * 100 + tempVector2.y * 10;
+		}
 	}
 }

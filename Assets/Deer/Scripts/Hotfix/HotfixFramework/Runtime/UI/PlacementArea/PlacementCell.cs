@@ -22,6 +22,10 @@ public enum CarFitStatus
 
 public class PlacementCell : MonoBehaviour
 {
+    public Vector3 CellPosition
+    {
+        get { return transform.position; }
+    }
     public IntVector2 CellIndex { get;private set; }
     private RectTransform mCellTransform;
     private Image mCellImage;
