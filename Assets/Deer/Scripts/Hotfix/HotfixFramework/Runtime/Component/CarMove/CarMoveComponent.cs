@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using cfg.Deer;
 using cfg.Deer.Enum;
+using HotfixBusiness.Entity;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -10,10 +11,11 @@ public class CarMoveComponent : GameFrameworkComponent
     // private CarMoveLogic m_CarMoveData;
     // public CarMoveLogic CarMoveData { get { return m_CarMoveData; }}
     // Start is called before the first frame update
-    void Start()
+
+    protected override void Awake()
     {
+        base.Awake();
         m_Camera = Camera.main;
-        //m_DefaultPos = m_CarMoveData.;
     }
 
     // Update is called once per frame
@@ -134,5 +136,28 @@ public class CarMoveComponent : GameFrameworkComponent
         }
 
         return tempRayHit;
+    }
+
+    public void SetSelectTransform(CarMoveLogic tempCarLogic)
+    {
+        m_SelectTransform = tempCarLogic.transform;
+    }
+
+    public void LoadLevelEntity(int level)
+    {
+        CarMoveLevelData tempLevelData = null;
+        GameEntry.Config.Tables.TbCarMoveLevelData.DataMap.TryGetValue(level, out tempLevelData);
+        foreach (var tempId in tempLevelData.CarEntityId)
+        {
+            CarEntityData tempEntityData = null;
+            GameEntry.Config.Tables.TbCarEntityData.DataMap.TryGetValue(level, out tempEntityData);
+            if (tempEntityData == null)
+            {
+                continue;
+            }
+            CarMoveData tempCarMoveData = new CarMoveData(GameEntry.Entity.GenEntityId(),tempId, tempEntityData.AssetPath);
+            tempCarMoveData.IsOwner = true;
+            GameEntry.Entity.ShowEntity(typeof(CarMoveLogic), "CarMoveEntity", 1, tempCarMoveData);
+        }
     }
 }
