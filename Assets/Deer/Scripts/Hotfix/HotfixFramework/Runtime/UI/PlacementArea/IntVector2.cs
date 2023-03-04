@@ -151,5 +151,18 @@ namespace Flower
 		{
 			return tempVector2.x * 100 + tempVector2.y * 10;
 		}
+		
+	}
+
+	public static class VectorEx
+	{
+		public static IntVector2 ConvertInVector2(this Vector2 tempVector2)
+		{
+			return new IntVector2((int)tempVector2.x,(int)tempVector2.y);
+		}
+		public static IntVector2 ConvertInVector2(this Vector3 tempVector3)
+		{
+			return new IntVector2((int)tempVector3.x,(int)tempVector3.y);
+		}
 	}
 }

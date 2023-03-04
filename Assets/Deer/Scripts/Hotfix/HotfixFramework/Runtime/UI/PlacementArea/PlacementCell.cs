@@ -26,21 +26,25 @@ public class PlacementCell : MonoBehaviour
     {
         get { return transform.position; }
     }
+    public PlacementCellState CellState { get;private set; }
     public IntVector2 CellIndex { get;private set; }
     private RectTransform mCellTransform;
     private Image mCellImage;
     public TextMeshProUGUI mIndexText;
     public Color EmptyColor = Color.gray;
-    public Color FillColor = Color.red;
+    public Color FillColor = Color.white;
 
+    private BoxCollider2D m_Collider2D;
     private void Awake()
     {
         mCellImage = transform.GetComponent<Image>();
+        m_Collider2D = transform.GetComponent<BoxCollider2D>();
         mCellTransform = mCellImage.transform as RectTransform;
     }
 
     public void SetState(PlacementCellState tempState)
     {
+        CellState = tempState;
         switch (tempState)
         {
             case PlacementCellState.Empty:
@@ -59,6 +63,7 @@ public class PlacementCell : MonoBehaviour
     public void SetCellSize(float tempSize)
     {
         mCellTransform.sizeDelta = new Vector2(tempSize, tempSize);
+        m_Collider2D.size = new Vector2(tempSize, tempSize);
     }
 
     public void SetCellIndex(IntVector2 tempIndex)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Main.Runtime;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -43,6 +44,10 @@ namespace Flower
 		/// </summary>
 		PlacementCell[,] m_Tiles;
 
+		public PlacementCell[,] AllCells
+		{
+			get { return m_Tiles; }
+		}
 		private Dictionary<int, Vector3> m_CellPosDict = new Dictionary<int, Vector3>();
 		/// <summary>
 		/// Converts a location in world space into local grid coordinates.
@@ -159,6 +164,11 @@ namespace Flower
 			}
 		}
 
+		public void SetState(IntVector2 pos,PlacementCellState tempState)
+		{
+			m_Tiles[pos.x, pos.y].SetState(tempState);
+		}
+
 		/// <summary>
 		/// Removes a tower from a grid, setting its cells as unoccupied.
 		/// </summary>
@@ -200,8 +210,9 @@ namespace Flower
 		/// <summary>
 		/// Initialize values
 		/// </summary>
-		protected virtual void Awake()
+		protected override void Awake()
 		{
+			base.Awake();
 			//ResizeCollider();
 
 			// Initialize empty bool array (defaults are false, which is what we want)
@@ -210,7 +221,7 @@ namespace Flower
 			// Precalculate inverted grid size, to save a division every time we translate coords
 			m_InvGridSize = 1 / gridSize;
 
-			SetUpGrid();
+			//SetUpGrid();
 		}
 
 		/// <summary>
@@ -226,10 +237,12 @@ namespace Flower
 			myCollider.offset = size * 0.5f;
 		}
 
+		public Transform MParent { get; set; }
+
 		/// <summary>
 		/// Instantiates Tile Objects to visualise the grid and sets up the <see cref="m_AvailableCells" />
 		/// </summary>
-		protected void SetUpGrid()
+		public void SetUpGrid()
 		{
 			PlacementCell tileToUse;
 			tileToUse = placementTilePrefab;
@@ -238,9 +251,13 @@ namespace Flower
 			{
 				// Create a container that will hold the cells.
 				var tilesParent = new GameObject("Container");
+				MParent = transform;
 				tilesParent.transform.parent = transform;
 				tilesParent.transform.localPosition = Vector3.zero;
 				tilesParent.transform.localRotation = Quaternion.identity;
+				tilesParent.transform.localScale = Vector3.one;
+				transform.localPosition = new Vector3(-600,-350f,0f);
+
 				m_Tiles = new PlacementCell[dimensions.x, dimensions.y];
 
 				for (int y = 0; y < dimensions.y; y++)
@@ -249,7 +266,7 @@ namespace Flower
 					{
 						Vector3 targetPos = GridToWorld(new IntVector2(x, y), new IntVector2(1, 1));
 						targetPos.y += 0.01f;
-						PlacementCell newTile = Instantiate(tileToUse, tilesParent.transform);
+						PlacementCell newTile = Instantiate(tileToUse, transform);
 						newTile.transform.SetPositionAndRotation(targetPos,Quaternion.identity);
 
 						m_Tiles[x, y] = newTile;
@@ -257,25 +274,64 @@ namespace Flower
 						newTile.SetCellSize(gridSize);
 						newTile.SetCellIndex(new IntVector2(x, y));
 						int tempKey = IntVector2.GetKey(newTile.CellIndex);
+						Vector3 tempPos = new Vector3(newTile.transform.position.x, newTile.transform.position.y, 0);
 						if (m_CellPosDict.ContainsKey(tempKey))
 						{
-							m_CellPosDict[tempKey] = newTile.transform.position;
+							m_CellPosDict[tempKey] = tempPos;
 						}
 						else
 						{
-							m_CellPosDict.Add(tempKey,newTile.transform.position);
+							m_CellPosDict.Add(tempKey,tempPos);
 						}
 					}
 				}
-				
-				PlacementCell newTile1 = Instantiate(tileToUse,tilesParent.transform);
-				newTile1.transform.SetPositionAndRotation(new Vector3((m_Tiles[0,1].transform.position.x + m_Tiles[1,0].transform.position.x) / 2,
-					m_Tiles[0,1].transform.position.y),Quaternion.identity);
-				newTile1.SetState(PlacementCellState.Filled);
-				newTile1.SetCellSize(gridSize);
+
+				// PlacementCell newTile1 = Instantiate(tileToUse,tilesParent.transform);
+				// newTile1.transform.SetPositionAndRotation(new Vector3((m_Tiles[0,1].transform.position.x + m_Tiles[1,0].transform.position.x) / 2,
+				// 	m_Tiles[0,1].transform.position.y),Quaternion.identity);
+				// newTile1.SetState(PlacementCellState.Filled);
+				// newTile1.SetCellSize(gridSize);
 			}
 		}
 
+		public Vector3 GetCellPos(IntVector2 tempIndex)
+		{
+			Vector3 tempVec = Vector3.zero;
+			if (m_CellPosDict.TryGetValue(IntVector2.GetKey(tempIndex),out tempVec))
+			{
+			}
+			return tempVec;
+		}
+		public Vector3 GetCellLocalPos(IntVector2 tempIndex)
+		{
+			return m_Tiles[tempIndex.x,tempIndex.y].transform.localPosition;
+		}
+		public Vector3 GetLocalPos(IntVector2 firstIndex,IntVector2 lastIndex,bool isVertical)
+		{
+			Vector3 tempFirstVec = GetCellLocalPos(firstIndex);
+			Vector3 tempLasVec = GetCellLocalPos(lastIndex);
+			if (isVertical)
+			{
+				return new Vector3(tempFirstVec.x, (tempFirstVec.y + tempLasVec.y) / 2, 0);
+			}
+			else
+			{
+				return new Vector3((tempFirstVec.x + tempLasVec.x) / 2, tempFirstVec.y, 0);
+			}
+		}
+		public Vector3 GetPos(IntVector2 firstIndex,IntVector2 lastIndex,bool isVertical)
+		{
+			Vector3 tempFirstVec = GetCellPos(firstIndex);
+			Vector3 tempLasVec = GetCellPos(lastIndex);
+			if (isVertical)
+			{
+				return new Vector3(tempFirstVec.x, (tempFirstVec.y + tempLasVec.y) / 2, 0);
+			}
+			else
+			{
+				return new Vector3((tempFirstVec.x + tempLasVec.x) / 2, tempFirstVec.y, 0);
+			}
+		}
 #if UNITY_EDITOR
 		/// <summary>
 		/// On editor/inspector validation, make sure we size our collider correctly.

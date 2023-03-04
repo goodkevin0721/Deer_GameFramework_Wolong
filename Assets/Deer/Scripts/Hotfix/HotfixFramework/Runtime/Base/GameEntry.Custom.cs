@@ -7,6 +7,7 @@ using Main.Runtime.Procedure;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Flower;
 using HotfixFramework.Runtime;
 using UGFExtensions.SpriteCollection;
 using UGFExtensions.Texture;
@@ -45,7 +46,9 @@ public partial class GameEntry
     public static AssetObjectComponent AssetObject => _assetObject ??= UnityGameFramework.Runtime.GameEntry.GetComponent<AssetObjectComponent>();
     private static AssetObjectComponent _assetObject;
 
-
+    public static CarPlacementGrid CarPlacement => _placement ??= UnityGameFramework.Runtime.GameEntry.GetComponent<CarPlacementGrid>();
+    private static CarPlacementGrid _placement;
+    
     private static void InitCustomDebuggers()
     {
         // 将来在这里注册自定义的调试器
