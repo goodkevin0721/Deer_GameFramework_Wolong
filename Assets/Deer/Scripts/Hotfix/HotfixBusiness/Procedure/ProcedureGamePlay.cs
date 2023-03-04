@@ -12,7 +12,7 @@ using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedure
 namespace HotfixBusiness.Procedure
 {
     /// <summary>
-    /// ÓÎÏ·Á÷³Ì
+    /// æ¸¸æˆæµç¨‹
     /// </summary>
     public class ProcedureGamePlay : ProcedureBase
     {
@@ -52,13 +52,13 @@ namespace HotfixBusiness.Procedure
 				GameEntry.Config.Tables.TbUIData_Race.DataMap.TryGetValue(m_CurRaceId, out tmpRaceData);
 				int levelIndex = tmpRaceData.RaceIndex;
 
-                Debug.Log($"tackor GamePlay µ±Ç°µÄLevel {levelIndex}");
+                Debug.Log($"tackor GamePlay å½“å‰çš„Level {levelIndex}");
 
 				List<PlayerData_Character> playerDataList = GameEntry.Config.Tables.TbPlayerData_Character.DataList;
 				int selectedCharacterIndex = GameEntry.Setting.GetInt("characterIndex");
 
-				//ÓÎÏ·Âß¼­ ==============================
-				//1. ´´½¨½ÇÉ« -------------------------
+				//æ¸¸æˆé€»è¾‘ ==============================
+				//1. åˆ›å»ºè§’è‰² -------------------------
 				SphereCharacterPlayerData characterData = new SphereCharacterPlayerData(GameEntry.Entity.GenEntityId(), 1, playerDataList[selectedCharacterIndex].Name);
 				characterData.Hp = playerDataList[selectedCharacterIndex].Hp;
 				characterData.Position = ractDataList[levelIndex].PlayerPos;
@@ -67,8 +67,8 @@ namespace HotfixBusiness.Procedure
 				GameEntry.Entity.ShowEntity(typeof(SphereCharacterPlayer), "CharacterGroup", 1, characterData);
                 m_SphereCharacterEntityId = characterData.Id;
 
-                //2. ´´½¨NPC ---------------------------
-                //2.1 ´ÓEXCEL ÖĞ»ñÈ¡Êı¾İ, ¸ù¾İÊı¾İ´´½¨ NPC
+                //2. åˆ›å»ºNPC ---------------------------
+                //2.1 ä»EXCEL ä¸­è·å–æ•°æ®, æ ¹æ®æ•°æ®åˆ›å»º NPC
                 List<cfg.Deer.EntityData> entityDataList = GameEntry.Config.Tables.TbEntityData.DataList;
 				//List<LevelData> levelDataList = GameEntry.Config.Tables.TbLevelData.DataList;
 				List<LevelData> levelDataList = GameEntry.Config.Tables.TbLevelData.DataList.FindAll(t => t.LevelId == levelIndex);
@@ -76,7 +76,7 @@ namespace HotfixBusiness.Procedure
                 {
                     switch (levelDataList[i].EntityId)
                     {
-                        case 0:  //Ô¶³ÌNPC
+                        case 0:  //è¿œç¨‹NPC
 							cfg.Deer.EntityData ed = entityDataList[levelDataList[i].EntityId];
 							NPCFarData npcFarData = new NPCFarData(GameEntry.Entity.GenEntityId(), 1, ed.EntityName);
                             //npcFarData.FireDuration = ed.Cd;
@@ -89,11 +89,11 @@ namespace HotfixBusiness.Procedure
 
 							GameEntry.Entity.ShowEntity(typeof(NPCFar), "LevelEntity", 1, npcFarData);
                             break;
-                        case 1:  //Ô¶³Ì×Óµ¯
+                        case 1:  //è¿œç¨‹å­å¼¹
                             break;
-						case 2:  //½üÕ½NPC
+						case 2:  //è¿‘æˆ˜NPC
 							break;
-                        case 3:  //ÊÕ¼¯Îï ĞÇĞÇ
+                        case 3:  //æ”¶é›†ç‰© æ˜Ÿæ˜Ÿ
 							break;
 						default:
                             break;
@@ -135,7 +135,7 @@ namespace HotfixBusiness.Procedure
 
         private void OnHandleUnloadSceneSuccess(object sender, GameEventArgs e)
         {
-            Debug.Log("tackor Ğ¶ÔØ³¡¾°³É¹¦");
+            Debug.Log("tackor å¸è½½åœºæ™¯æˆåŠŸ");
             if (GameEntry.Setting.GetBool("IsRestart"))
 			{
 				ChangeState<ProcedureChangeScene>(m_ProcedureOwner);
@@ -147,7 +147,7 @@ namespace HotfixBusiness.Procedure
         }
         private void OnHandleUnloadSceneFailure(object sender, GameEventArgs e)
         {
-            Debug.Log("tackor Ğ¶ÔØ³¡¾°Ê§°Ü");
+            Debug.Log("tackor å¸è½½åœºæ™¯å¤±è´¥");
         }
 
         private void OnHandleShowEntitySuccess(object send, GameEventArgs e)
@@ -164,7 +164,7 @@ namespace HotfixBusiness.Procedure
 			{
 				m_CurPlayer.CharacterData.Hp -= ne.Damage;
 
-				//Ã»ÑªÁË, µ¯³ö½áËãÒ³Ãæ
+				//æ²¡è¡€äº†, å¼¹å‡ºç»“ç®—é¡µé¢
 				if (m_CurPlayer.CharacterData.Hp <= 0)
 				{
 					GameEntry.UI.OpenUIForm(UIFormId.UIGameSettleForm, this);
@@ -176,7 +176,7 @@ namespace HotfixBusiness.Procedure
 		private void OnHandleTrigStarPlayer(object send, GameEventArgs e)
 		{
 			TrigStarEventArgs ne = (TrigStarEventArgs)e;
-            Debug.Log($"»ñÈ¡µÄÊı¾İ: {ne.StarNum}");
+            Debug.Log($"è·å–çš„æ•°æ®: {ne.StarNum}");
             m_CurStarNum++;
 
             if (m_CurStarNum >= 3)
@@ -234,21 +234,21 @@ namespace HotfixBusiness.Procedure
 		{
 			string sceneName = GameEntry.Setting.GetString("LoadedScene");
 
-			//»¹ĞèËùÓĞÊµÌå
+			//è¿˜éœ€æ‰€æœ‰å®ä½“
 			GameEntry.Entity.HideAllLoadedEntities();
 			GameEntry.Entity.HideAllLoadingEntities();
 
-			//Ğ¶ÔØ³¡¾°
+			//å¸è½½åœºæ™¯
 			GameEntry.Scene.UnloadScene(AssetUtility.Scene.GetSceneAsset(sceneName));
 		}
 
-        /// <summary>»ñÈ¡³¡¾°ID</summary>
+        /// <summary>è·å–åœºæ™¯ID</summary>
         public int GetRaceIndex()
         {
             return m_CurRaceId;
 		}
 
-		/// <summary>»ñÈ¡ĞÇĞÇÊıÁ¿</summary>
+		/// <summary>è·å–æ˜Ÿæ˜Ÿæ•°é‡</summary>
 		public int GetStarNum()
         {
             return m_CurStarNum;
