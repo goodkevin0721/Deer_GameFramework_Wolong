@@ -8,7 +8,7 @@
 
 namespace cfg.Deer.Enum
 {
-    public enum CarMoveType
+    public enum ECarDirectionType
     {
         /// <summary>
         /// 水平

@@ -18,11 +18,13 @@ public sealed partial class CarEntityData :  Bright.Config.BeanBase
     public CarEntityData(ByteBuf _buf) 
     {
         Id = _buf.ReadInt();
+        CellNum = _buf.ReadUnityVector3();
+        CellSize = _buf.ReadUnityVector3();
         AssetPath = _buf.ReadString();
         Name = _buf.ReadString();
-        MoveType = _buf.ReadInt();
-        StartPos = _buf.ReadUnityVector3();
-        VictoryPos = _buf.ReadUnityVector3();
+        MoveDirection = _buf.ReadInt();
+        {int n = System.Math.Min(_buf.ReadSize(), _buf.Size);VictoryPos = new System.Collections.Generic.List<UnityEngine.Vector2>(n);for(var i = 0 ; i < n ; i++) { UnityEngine.Vector2 _e;  _e = _buf.ReadUnityVector2(); VictoryPos.Add(_e);}}
+        RayOffset = _buf.ReadUnityVector3();
         PostInit();
     }
 
@@ -36,7 +38,15 @@ public sealed partial class CarEntityData :  Bright.Config.BeanBase
     /// </summary>
     public int Id { get; private set; }
     /// <summary>
-    /// 实体的名称
+    /// 格子数量
+    /// </summary>
+    public UnityEngine.Vector3 CellNum { get; private set; }
+    /// <summary>
+    /// 格子数量
+    /// </summary>
+    public UnityEngine.Vector3 CellSize { get; private set; }
+    /// <summary>
+    /// 实体的路径
     /// </summary>
     public string AssetPath { get; private set; }
     /// <summary>
@@ -46,15 +56,15 @@ public sealed partial class CarEntityData :  Bright.Config.BeanBase
     /// <summary>
     /// 移动类型
     /// </summary>
-    public int MoveType { get; private set; }
-    /// <summary>
-    /// 初始位置
-    /// </summary>
-    public UnityEngine.Vector3 StartPos { get; private set; }
+    public int MoveDirection { get; private set; }
     /// <summary>
     /// 胜利位置
     /// </summary>
-    public UnityEngine.Vector3 VictoryPos { get; private set; }
+    public System.Collections.Generic.List<UnityEngine.Vector2> VictoryPos { get; private set; }
+    /// <summary>
+    /// 射线长度
+    /// </summary>
+    public UnityEngine.Vector3 RayOffset { get; private set; }
 
     public const int __ID__ = 1689791521;
     public override int GetTypeId() => __ID__;
@@ -72,11 +82,13 @@ public sealed partial class CarEntityData :  Bright.Config.BeanBase
     {
         return "{ "
         + "Id:" + Id + ","
+        + "CellNum:" + CellNum + ","
+        + "CellSize:" + CellSize + ","
         + "AssetPath:" + AssetPath + ","
         + "Name:" + Name + ","
-        + "MoveType:" + MoveType + ","
-        + "StartPos:" + StartPos + ","
-        + "VictoryPos:" + VictoryPos + ","
+        + "MoveDirection:" + MoveDirection + ","
+        + "VictoryPos:" + Bright.Common.StringUtil.CollectionToString(VictoryPos) + ","
+        + "RayOffset:" + RayOffset + ","
         + "}";
     }
     

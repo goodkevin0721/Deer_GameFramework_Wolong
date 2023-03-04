@@ -20,7 +20,6 @@ public sealed partial class CarMoveLevelData :  Bright.Config.BeanBase
         Id = _buf.ReadInt();
         EntityId = _buf.ReadInt();
         {int n = System.Math.Min(_buf.ReadSize(), _buf.Size);CarEntityId = new System.Collections.Generic.List<int>(n);for(var i = 0 ; i < n ; i++) { int _e;  _e = _buf.ReadInt(); CarEntityId.Add(_e);}}
-        LevelId = _buf.ReadInt();
         PostInit();
     }
 
@@ -38,13 +37,9 @@ public sealed partial class CarMoveLevelData :  Bright.Config.BeanBase
     /// </summary>
     public int EntityId { get; private set; }
     /// <summary>
-    /// 初始位置
+    /// 使用的EntityId
     /// </summary>
     public System.Collections.Generic.List<int> CarEntityId { get; private set; }
-    /// <summary>
-    /// 所属场景
-    /// </summary>
-    public int LevelId { get; private set; }
 
     public const int __ID__ = -1144358391;
     public override int GetTypeId() => __ID__;
@@ -64,7 +59,6 @@ public sealed partial class CarMoveLevelData :  Bright.Config.BeanBase
         + "Id:" + Id + ","
         + "EntityId:" + EntityId + ","
         + "CarEntityId:" + Bright.Common.StringUtil.CollectionToString(CarEntityId) + ","
-        + "LevelId:" + LevelId + ","
         + "}";
     }
     
