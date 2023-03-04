@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         private Entity m_Entity = null;
         private Transform m_CachedTransform = null;
         private int m_OriginalLayer = 0;
-        private Transform m_OriginalTransform = null;
+        protected Transform m_OriginalTransform = null;
 
         /// <summary>
         /// 获取实体。
